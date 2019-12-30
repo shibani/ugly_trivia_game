@@ -40,37 +40,85 @@ module UglyTrivia
       @purses[how_many_players] = 0
       @in_penalty_box[how_many_players] = false
 
-      puts "#{player_name} was added"
-      puts "They are player number #{@players.length}"
+      puts io_player_added(player_name)
+      puts io_player_order
 
       true
     end
 
+    def io_player_added(name)
+      "#{name} was added"
+    end
+    
+    def io_player_order
+      "They are player number #{@players.length}"
+    end
+    
+    def io_announce_roll(roll)
+      "They have rolled a #{roll}"
+    end
+    
+    def io_current_player
+      "#{@players[@current_player]} is the current player"
+    end
+    
+    def io_exiting_penalty_box
+      "#{@players[@current_player]} is getting out of the penalty box"
+    end
+    
+    def io_not_exiting_penalty_box
+      "#{@players[@current_player]} is not getting out of the penalty box"
+    end
+    
+    def io_entering_penalty_box
+      "#{@players[@current_player]} was sent to the penalty box"
+    end
+    
+    def io_new_location
+      "#{@players[@current_player]}'s new location is #{@places[@current_player]}"
+    end
+    
+    def io_player_purse_amount
+      "#{@players[@current_player]} now has #{@purses[@current_player]} Gold Coins."
+    end
+    
+    def io_correct_answer
+      "Answer was corrent!!!!"
+    end
+    
+    def io_wrong_answer
+      "Question was incorrectly answered"
+    end
+    
+    def io_current_category
+      "The category is #{current_category}"
+    end
+
     def roll(roll)
-      puts "#{@players[@current_player]} is the current player"
-      puts "They have rolled a #{roll}"
+      puts io_current_player
+      puts io_announce_roll(roll)
 
       if @in_penalty_box[@current_player]
         if roll % 2 != 0
           @is_getting_out_of_penalty_box = true
 
-          puts "#{@players[@current_player]} is getting out of the penalty box"
+          puts io_exiting_penalty_box
           @places[@current_player] = @places[@current_player] + roll
           @places[@current_player] = @places[@current_player] - 12 if @places[@current_player] > 11
 
-          puts "#{@players[@current_player]}'s new location is #{@places[@current_player]}"
-          puts "The category is #{current_category}"
+          puts io_new_location
+          puts io_current_category
           ask_question
         else
-          puts "#{@players[@current_player]} is not getting out of the penalty box"
+          puts io_not_exiting_penalty_box
           @is_getting_out_of_penalty_box = false
           end
       else
         @places[@current_player] = @places[@current_player] + roll
         @places[@current_player] = @places[@current_player] - 12 if @places[@current_player] > 11
 
-        puts "#{@players[@current_player]}'s new location is #{@places[@current_player]}"
-        puts "The category is #{current_category}"
+        puts io_new_location
+        puts io_current_category
         ask_question
       end
     end
@@ -78,9 +126,9 @@ module UglyTrivia
     def was_correctly_answered
       if @in_penalty_box[@current_player]
         if @is_getting_out_of_penalty_box
-          puts 'Answer was correct!!!!'
+          puts io_correct_answer
           @purses[@current_player] += 1
-          puts "#{@players[@current_player]} now has #{@purses[@current_player]} Gold Coins."
+          puts io_player_purse_amount
 
           winner = did_player_win()
           @current_player += 1
@@ -93,9 +141,9 @@ module UglyTrivia
           true
         end
       else
-        puts "Answer was corrent!!!!"
+        puts io_correct_answer
         @purses[@current_player] += 1
-        puts "#{@players[@current_player]} now has #{@purses[@current_player]} Gold Coins."
+        puts io_player_purse_amount
 
         winner = did_player_win
         @current_player += 1
@@ -106,8 +154,8 @@ module UglyTrivia
     end
 
     def wrong_answer
-  		puts 'Question was incorrectly answered'
-  		puts "#{@players[@current_player]} was sent to the penalty box"
+  		puts io_wrong_answer
+  		puts io_entering_penalty_box
   		@in_penalty_box[@current_player] = true
 
       @current_player += 1
